@@ -44,6 +44,7 @@ credentials/
 
 # Logs
 *.log
+!sample_data/*.log
 logs/
 
 # Editor
