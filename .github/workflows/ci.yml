@@ -8,7 +8,6 @@ on:
 
 jobs:
   terraform:
-    if: ${{ hashFiles('sample_data/terraform/*.tf') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,8 +17,7 @@ jobs:
       - name: Terraform validate
         run: bash bash/tf_wrapper.sh validate sample_data/terraform
 
-  lint: 
-    if: ${{ hashFiles('bash/*.sh') != '' }}
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +25,6 @@ jobs:
         run: shellcheck bash/*.sh
 
   docker:
-    if: ${{ hashFiles('sample_data/docker/Dockerfile') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
