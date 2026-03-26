@@ -5,7 +5,7 @@ set -euo pipefail
 # Function to confirm destroy and apply actions
 confirm_action() {
     local message="$1"
-    read -p "$message (y/n) " confirm
+    read -rp "$message (y/n) " confirm
     if [[ "$confirm" != "y" ]]; then
         echo "Aborting..."
         exit 1
@@ -51,7 +51,7 @@ if [[ -n "${2:-}" ]]; then
 fi
 
 # Check for terraform files in the current directory
-if ls *.tf > /dev/null 2>&1; then
+if ls ./*.tf > /dev/null 2>&1; then
     echo "Terraform configuration files found."
 else
     echo "No Terraform configuration files (.tf) found in the current directory."
@@ -59,7 +59,7 @@ else
 fi
 
 # Log the command to log file with timestamp in the root of the repo
-REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo "$(pwd)")"
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 echo "$(date) - ran: ${1:-}" >> "$REPO_ROOT/tf_wrapper.log"
 
 # Run terraform command based on first argument

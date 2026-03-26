@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  terraform:
+    if: hashFiles('sample_data/terraform/*.tf') != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Terraform fmt
+        run: bash bash/tf_wrapper.sh fmt sample_data/terraform
+      - name: Terraform validate
+        run: bash bash/tf_wrapper.sh validate sample_data/terraform
+
+  lint: 
+    if: hashFiles('bash/*.sh') != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ShellCheck
+        run: shellcheck bash/*.sh
+
+  docker:
+    if: hashFiles('sample_data/docker/Dockerfile') != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: bash bash/docker_helper.sh build sample_data/docker
+      - name: Run Docker container
+        run: bash bash/docker_helper.sh run
+      - name: Test health endpoint
+        run: curl -f http://localhost:8080/health
+      - name: Test ready endpoint 
+        run: curl -f http://localhost:8080/ready
+      - name: Cleanup
+        run: bash bash/docker_helper.sh clean
+
