@@ -1,34 +1,56 @@
-import argparse           # Handles user input after script name in command line
-
-parser = argparse.ArgumentParser(description="Parse log files for warnings and errors")  # description used when user runs script with --help
-parser.add_argument("logfile", help="Path to the log file")                              # specifies argument script expects
-args = parser.parse_args()                                                               # store the parsed arguments in a variable 
+import argparse
+import sys
+import json
 
 
-errors = 0
-warnings = 0
-error_lines = []
-warning_lines = []
+def parse_log(filepath):
+    result = {"errors": 0, "warnings": 0, "error_lines": [], "warning_lines": []}
 
-try:
-    with open(args.logfile) as f:
+    with open(filepath) as f:
         for line in f:
             if "ERROR" in line:
-                errors += 1
-                error_lines.append(line)
+                result["errors"] += 1
+                result["error_lines"].append(line.strip())
             if "WARNING" in line:
-                warnings += 1
-                warning_lines.append(line)
+                result["warnings"] += 1
+                result["warning_lines"].append(line.strip())
 
-    print(f"Errors: {errors}")
-    print(f"Warnings: {warnings}")
-    print("\n---Errors---")
-    for line in error_lines:
-        print(line.strip())
+    return result
 
-    print("\n---Warnings---")
-    for line in warning_lines:
-        print(line.strip())  
 
-except FileNotFoundError:
-    print("Error: log file not found.")
+# Parse arguments, run log parsing, and print results
+def main():
+    parser = argparse.ArgumentParser(description="Parse log files for warnings and errors")
+    parser.add_argument("logfile", help="Path to the log file")
+    parser.add_argument("--level", help="Filter by severity (ERROR or WARNING)")
+    parser.add_argument("--json", action="store_true", help="Output results in JSON format")
+    args = parser.parse_args()
+
+    try:
+        result = parse_log(args.logfile)
+
+        if args.json:
+            print(json.dumps(result))
+
+        else:
+            print(f"\nRESULT: {result['errors']} errors, {result['warnings']} warnings found")
+            if args.level != "WARNING":
+                print("\n---Errors---")
+                for line in result["error_lines"]:
+                    print(line)
+
+            if args.level != "ERROR":
+                print("\n---Warnings---")
+                for line in result["warning_lines"]:
+                    print(line)
+
+        sys.exit(1 if result["errors"] > 0 else 0)
+
+    except FileNotFoundError:
+        print("Error: log file not found.")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
+

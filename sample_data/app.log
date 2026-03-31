@@ -1,18 +1,25 @@
-2024-01-15 10:23:01 INFO Application started
-2024-01-15 10:23:02 INFO Loading configuration
-2024-01-15 10:23:03 WARNING Config file not found, using defaults
-2024-01-15 10:23:05 ERROR Database connection failed
-2024-01-15 10:23:06 INFO Retrying database connection
-2024-01-15 10:23:08 INFO Database connected
-2024-01-15 10:23:10 WARNING Disk usage above 75%
-2024-01-15 10:23:15 INFO Health check passed
-2024-01-15 10:23:20 ERROR Timeout waiting for response from auth service
-2024-01-15 10:23:25 INFO Request processed successfully
-2024-01-15 10:23:30 WARNING Memory usage above 80%
-2024-01-15 10:23:35 ERROR Failed to write to log directory
-2024-01-15 10:23:40 INFO Scheduled backup started
-2024-01-15 10:23:45 INFO Backup completed
-2024-01-15 10:23:50 WARNING SSL certificate expires in 7 days
-2024-01-15 10:23:55 ERROR Connection refused on port 443
-2024-01-15 10:24:00 INFO Service restarted
-2024-01-15 10:24:05 INFO All systems operational
+2024-01-15 08:00:00 INFO Application started on port 8080
+2024-01-15 08:00:01 INFO Connected to database
+2024-01-15 08:05:12 INFO User login successful user=admin
+2024-01-15 08:10:30 WARNING Disk usage at 82%
+2024-01-15 08:15:00 INFO Health check passed
+2024-01-15 08:22:45 WARNING Slow query detected duration=3200ms
+2024-01-15 08:30:00 INFO Backup job started
+2024-01-15 08:30:15 ERROR Backup failed: permission denied on /var/backups
+2024-01-15 08:35:00 INFO Retrying backup job
+2024-01-15 08:35:20 INFO Backup completed successfully
+2024-01-15 09:00:00 INFO Scheduled cleanup running
+2024-01-15 09:01:00 WARNING Memory usage at 78%
+2024-01-15 09:15:30 ERROR Connection to cache server timed out
+2024-01-15 09:15:45 INFO Reconnected to cache server
+2024-01-15 09:30:00 INFO Deploying version 2.1.4
+2024-01-15 09:30:10 WARNING Deprecated API endpoint called /v1/users
+2024-01-15 09:30:30 INFO Deployment completed
+2024-01-15 09:45:00 ERROR Failed to send email: SMTP connection refused
+2024-01-15 10:00:00 INFO Certificate renewal check passed
+2024-01-15 10:15:00 WARNING Response time above threshold endpoint=/api/reports
+2024-01-15 10:30:00 INFO Log rotation completed
+2024-01-15 10:45:00 ERROR Disk write failed: /tmp/upload no space left
+2024-01-15 11:00:00 INFO Auto-scaling triggered: 2 -> 3 instances
+2024-01-15 11:15:00 WARNING SSL certificate expires in 14 days
+2024-01-15 11:30:00 INFO Application running normally
