@@ -14,8 +14,8 @@
 
 # Test: script fails when docker is not installed
 @test "fails when docker is not installed" {
-    # Use minimal PATH so bash works but docker is hidden
-    PATH="/usr/bin:/bin" run bash bash/docker_helper.sh build
+    # Only include /bin so bash works but docker (/usr/bin) is hidden
+    PATH="/bin" run bash bash/docker_helper.sh build
     [ "$status" -eq 1 ]
     [[ "$output" == *"Docker not found"* ]]
 }
