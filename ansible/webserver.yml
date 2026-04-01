@@ -1,0 +1,92 @@
+# Playbook to provision and configure an nginx web server
+# Run with: ansible-playbook -i inventory.ini webserver.yml
+
+- name: Provision web server
+  hosts: docker
+  # run as root user
+  become: true
+
+  # variables for playbook
+  vars:
+    nginx_port: "80"
+    server_name: localhost
+    deploy_user: deploy
+
+  tasks:
+    # Create a deploy user with web file permissions
+    - name: Create deploy user
+      # module for managing user accounts
+      user:
+        name: "{{ deploy_user }}"
+        shell: /bin/bash
+        groups: www-data
+        append: true
+
+    # Set up web directory with proper ownership and permissions
+    - name: Set up web directory
+      file:
+        path: /var/www/html
+        state: directory
+        owner: "{{ deploy_user }}"
+        group: www-data
+        mode: "0755"
+
+    # Install nginx web server package
+    - name: Install nginx
+      # ansible module for installing packages on ubuntu/debian linux
+      apt:
+        name: nginx
+        state: present
+        update_cache: true
+
+    # Deploy custom config from a template
+    - name: Deploy nginx config
+      # module for managing file content using a jinja2 template
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      notify: Restart nginx
+
+    # Start nginx and enable it on boot
+    - name: Start and enable nginx
+      # module for managing system services (start, stop, restart)
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    # Install and configure ubuntu firewall to allow HTTP traffic
+    - name: Install UFW firewall
+      apt:
+        name: ufw
+        state: present
+      when: ansible_virtualization_type != "docker"
+
+    # Allow SSH traffic
+    - name: Allow SSH through firewall
+      ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+      when: ansible_virtualization_type != "docker"
+
+    # Firewall rule to allow HTTP traffic on nginx port
+    - name: Allow HTTP traffic through firewall
+      ufw:
+        rule: allow
+        port: "{{ nginx_port }}"
+        proto: tcp
+      when: ansible_virtualization_type != "docker"
+
+    # Turn on firewall
+    - name: Enable firewall
+      ufw:
+        state: enabled
+      when: ansible_virtualization_type != "docker"
+
+  # Handler restarts nginx if config changes
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted

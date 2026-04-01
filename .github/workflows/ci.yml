@@ -36,6 +36,15 @@ jobs:
       - name: Run Python tests
         run: python -m pytest tests/ -v
 
+  ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax check playbook.yml
+        run: ansible-playbook -i ansible/inventory.ini --syntax-check ansible/playbook.yml
+      - name: Syntax check webserver.yml
+        run: ansible-playbook -i ansible/inventory.ini --syntax-check ansible/webserver.yml
+
   docker:
     runs-on: ubuntu-latest
     steps:

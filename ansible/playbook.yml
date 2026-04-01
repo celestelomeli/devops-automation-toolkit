@@ -1,0 +1,27 @@
+# Simple playbook to create a directory and config file on localhost
+
+- name: Basic server setup
+  hosts: local
+
+  tasks:
+    - name: Create app directory
+      # ansible module for managing files and directories
+      file:                             
+        path: /tmp/myapp
+        state: directory
+
+    - name: Create a config file
+      # ansible module for managing file content
+      copy:  
+        content: |
+          app_name=myapp
+          environment=dev
+          port=8080
+        dest: /tmp/myapp/config.txt
+
+    - name: Show confirmation
+      # ansible module for printing messages to the console
+      debug:
+        msg: "Setup complete - config written to /tmp/myapp/config.txt"
+
+
