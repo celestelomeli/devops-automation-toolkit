@@ -14,6 +14,8 @@
 
 # Test: script fails when docker is not installed
 @test "fails when docker is not installed" {
+    # Skip in CI — on Ubuntu /bin is a symlink to /usr/bin so docker can't be hidden via PATH
+    [ -n "${CI:-}" ] && skip "cannot hide docker on Ubuntu runners"
     # Only include /bin so bash works but docker (/usr/bin) is hidden
     PATH="/bin" run bash bash/docker_helper.sh build
     [ "$status" -eq 1 ]
